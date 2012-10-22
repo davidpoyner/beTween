@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Tween - Curve Example</title>
+    <link href="css/prettify.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="js/prettify.js"></script>
+    <script src="js/Tween.js"></script>
+    <link href="css/style.css" />
+    <style>
+    body{
+      background:#f8f8f8;
+    }
+    #container{
+      min-width:800px;
+      width:60%;
+      margin:0 auto;
+      display:block;
+    }
+    #viewport{
+      position:relative;
+      height:400px;
+      width:100%;
+      overflow:hidden;
+      border: 1px solid #d7d7d7;
+      background:white;
+    }
+
+    #rectangle{
+      display:block;
+      width:40px;
+      height:40px;
+      position:relative;
+      background:red;
+    }
+    #button-container{
+      width:300px;
+      display:block;
+      position:relative;
+      margin:0 auto;
+    }
+    button{
+      position:relative;
+      padding:10px;
+      text-align:center;
+      margin-top:15px;
+      width:120px;
+      margin-left:5px;
+      text-transform:uppercase;
+    }
+    h1{
+    padding-top:10px; padding-bottom:10px;
+    text-align:center;
+    text-transform:uppercase;
+    font-family:Helvetica;
+    color:darkGrey;
+    text-shadow: 1px 1px 0px black;
+    }
+
+    pre.prettyprint{
+      border:1px solid dotted;
+    }
+    .prettyprint{
+      border:none;
+      height:0px;
+      overflow:hidden;
+      display:none;
+
+    }
+    </style>
+
+    <!-- Curve Example -->
+    <script>
+        var fadeInAll = function(){
+          var i = 0;
+          var all = document.body.querySelectorAll("#container > *");
+          for (node in all){
+            ++i;
+            var _node = all[node]
+            if(typeof _node == "object"){
+              _node.style.opacity = 0;
+              
+              var tw = new Tween();
+              tw.node = _node;
+              tw.duration = 400; 
+              tw.delay = i * 150;
+              tw.easing = Easing.Quint.easeIn; 
+              tw.properties = {opacity:{begin:0, end:1}}
+              tw.play();
+            };
+          }
+        }
+        var init = function(){
+
+
+          prettyPrint();
+          fadeInAll();
+          
+          // Grab the target
+          var _target = document.getElementById("rectangle");
+          var _tweenButton = document.getElementById("tweenButton");
+          var _codeButton = document.getElementById("showButton");
+
+          var isShowingCode = false;
+
+          // Create the tween
+          var _tween = new Tween();
+
+          // Create the curve object
+          var _curve = [40, 500]          
+
+          var _onEnd = function(){
+            _tween.reverse();
+          }
+
+          // Create the tween options;
+          var _options = {
+            node: _target,    // The object we are going to tween
+            duration:1000,    // The duration of the tween
+            easing:Easing.Quint.easeInOut, //The easing for the tween
+            curve:_curve,
+            onAnimate:function(c){
+              this.node.style.width = c + "px";
+              this.node.style.top = (~~(c/2) - (_curve[0]/2)) + "px";
+            },
+            onEnd:_onEnd
+          }
+
+          _tweenButton.onclick = function tweenMe(){
+            if (!_tween.isAnimating) _tween.play(_options);
+          };     
+
+          var _t = new Tween();
+          _t.node = document.querySelectorAll(".prettyprint")[0];
+          _t.properties = {height:{begin:0, end:422, unit:"px"}};
+          _t.easing = Easing.Expo.easeOut;
+          _t.duration = 500;
+          
+          _t.onBegin = function(){
+            _t.node.style.display = "block";
+          };
+          
+          _t.onEnd = function(){
+            _t.node.style.border = "1px grey dashed";
+            _t.node.style.display = (isShowingCode == true) ? "block" : "none";
+
+            _codeButton.innerHTML = (isShowingCode == true) ? "hide the code" : "show the code";
+            _t.reverse();
+          };
+
+          _codeButton.onclick = function showCode(){            
+            if (!_t.isAnimating) _t.play();
+            
+            isShowingCode = (isShowingCode == true) ? false : true;
+          };   
+         }
+
+      </script>
+      <!-- End Line Example -->
+</head>
+<body onload="init()">
+  <div id="container">
+  <h1>Tween Example - Curve</h1>
+  <hr>
+  <br>
+  <div id="viewport"><div id="rectangle"></div></div>
+  <div id="button-container"><button id="tweenButton" onclick="tweenMe()"> Tween </button><button id="showButton" onclick="showCode()"> Show the Code </button></div>
+  <pre class="prettyprint linenums" style="position:relative;">
+    
+
+    // Grab the target
+    var _target = document.getElementById("rectangle");
+
+    // Create the tween
+    var _tween = new Tween();
+
+    // Create the curve object
+    var _curve = [40, 500]  
+
+    // Create the tween options;
+    var _options = {
+        node: _target,    // The object we are going to tween
+        duration:1000,    // The duration of the tween
+        easing:Easing.Quint.easeInOut, //The easing for the tween
+        curve:_curve,
+        onAnimate:function(c){
+          this.node.style.width = c + "px";
+          this.node.style.top = (~~(c/2) - (_curve[0]/2)) + "px";
+        },
+        onEnd:_onEnd
+     }
+     
+    _tween.to(_options);      
+  </pre>
+</div>
+</body>
+</html>
+

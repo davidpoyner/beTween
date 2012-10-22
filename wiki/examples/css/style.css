@@ -1,0 +1,12 @@
+body{
+  background:#d3d3d3;
+}
+
+#circle{
+  display:block;
+  width:40px;
+  height:40px;
+  border-radius:20px;
+  position:absolute;
+  background:red;
+}
