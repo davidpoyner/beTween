@@ -107,13 +107,8 @@
           // Create the tween
           var _tween = new Tween();
 
-          // Create the properties object
-          var _properties ={
-            width:{begin:40, end:50, unit:"px"},
-            height:{begin:40, end:50, unit:"px"},
-            left:{begin:0, end:800, unit:"px"},
-            top:{begin:0, end:300, unit:"px"}
-          }
+          // Create the line object
+          var line = new Line([0,0,0,0],[100,200,300,400])          
 
           var _onEnd = function(){
             _tween.reverse();
@@ -124,12 +119,18 @@
             node: _target,    // The object we are going to tween
             duration:1000,    // The duration of the tween
             easing:Easing.Quint.easeInOut, //The easing for the tween
-            properties:_properties,
+            curve:line,
+            onAnimate:function(c){
+              this.node.style.left = c[0] + "px";
+              this.node.style.top = c[1] + "px";
+              this.node.style.width = c[2] + "px";
+              this.node.style.height = c[3] + "px";
+            },
             onEnd:_onEnd
           }
 
           _tweenButton.onclick = function tweenMe(){
-            if (!_tween.isAnimating) _tween.to(_options);
+            if (!_tween.isAnimating) _tween.play(_options);
           };     
 
           var _t = new Tween();
@@ -176,24 +177,27 @@
     // Create the tween
     var _tween = new Tween();
 
-    // Create the properties object
-    var _properties ={
-      width:{begin:40, end:50, unit:"px"},
-      height:{begin:40, end:50, unit:"px"},
-      left:{begin:0, end:800, unit:"px"},
-      top:{begin:0, end:300, unit:"px"}
-    }
+    // Create the line object
+    var line = new Line([0,0,0,0],[100,200,300,400])     
 
     // Create the tween options;
     var _options = {
-      node: _target,    // The object we are going to tween
-      duration:1000,    // The duration of the tween
-      easing:Easing.Quint.easeInOut, //The easing for the tween
-      properties:_properties
+        node: _target,    // The object we are going to tween
+        duration:1000,    // The duration of the tween
+        easing:Easing.Quint.easeInOut, //The easing for the tween
+        curve:line,
+        onAnimate:function(c){
+          this.node.style.left = c[0] + "px";
+          this.node.style.top = c[1] + "px";
+          this.node.style.width = c[2] + "px";
+          this.node.style.height = c[3] + "px";
+        },
+        onEnd:_onEnd
     }
-     
-    _tween.to(_options);      
+   
+     _tween.to(_options);      
   </pre>
 </div>
 </body>
 </html>
+
