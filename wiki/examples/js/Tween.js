@@ -81,85 +81,86 @@
  */
 
 var Tween = function(){
-  this.onEnd = -1; 
-  this.onBegin = -1; 
-  this.onAnimate = -1;  
+  this.onEnd = null;
+  this.onBegin = null; 
+  this.onAnimate = null;
   this.delay = 0;
   this.node = null;
   this.duration = 0;
   this.isAnimating = false; 
   this.isReversed = false; 
   this.isPaused = false; 
-  this.properties = -1;  
+  this.properties = null;  
   this.curve = [0, 1];
-  this.easing = Easing.Circ.easeIn;
+  this.easing = Tween.Easing.Quad.easeOut;
   this._previousTime = null; 
   this._currentTime = null; 
-  this._startTime = null; 
+  this._startTime = 0;
+  this._endTime = null; 
   this._delta = null; 
   this._t = 0;
-  this._motionStack = -1;
+  this._motionStack = null;
 }
 
 Tween.prototype = {
    
    /**
     * Private method which creates a MotionObject based on the curves set in the Tween Options before the start of the tween.
-    * @private  {object}    Tween._setCurve
+    * @private  {object}    Tween._setMotionFromCurve
     * @property {object}
     *
    */
-   _setCurve:function(){
+   _setMotionFromCurve:function(){
     var c = this.curve;
 
-    if (c instanceof Line == false){
-      var _m = new MotionObject();
-      _m.d = this.duration;
-      _m.b = c[0];
-      _m.c = c[1] - c[0];
-      this._motionStack.push(_m);
+    if (c instanceof Tween.Line == false){
+      var _mo = new MotionObject();
+      _mo.d = this.duration;
+      _mo.b = c[0];
+      _mo.c = c[1] - c[0];
+      this._motionStack.push(_mo);
     }else{
         var _c1 = c.curves[0];
         var _c2 = c.curves[1];
 
         for (var i = 0; i < _c1.length; ++i){
-          var _m = new MotionObject();
+          var _mo = new MotionObject();
 
-          _m.b = _c1[i];
-          _m.c = _c2[i] - _c1[i];
-          this._motionStack.push(_m);
+          _mo.b = _c1[i];
+          _mo.c = _c2[i] - _c1[i];
+          this._motionStack.push(_mo);
         }
       }
   },
 
   /**
    *  Private method which creates a MotionObject based on the property Object passed in
-   *  @private {object}     Tween._setProperty
+   *  @private {object}     Tween._setMotionFromProperty
    *  @param   {object}     properties           The properties object which should contain standard CSS properties.
    *  
    */
   
-   _setProperty:function(properties){
+   _setMotionFromProperty:function(){
          // Each object in the properties object should be a CSS style
-           for(property in properties){
-              var _m = new MotionObject();
-              _m.prop = property;
-              var _property = properties[property];
+           for(property in this.properties){
+              var _mo = new MotionObject();
+              _mo.prop = property;
+              var _property = this.properties[property];
               // If this is an object parse
               // // TODO: webkit, color tranforms: further detection and proceeding parsing
               //
               if (typeof _property == "object"){
                 for(_p in _property){
-                    if (_p == "begin") _m.b = _property[_p];
-                    if (_p == "end") {_m.c = _property[_p] - _m.b;}
-                    if (_p == "unit") _m.unit = _property[_p];
+                    if (_p == "begin") _mo.b = _property[_p];
+                    if (_p == "end") {_mo.c = _property[_p] - _mo.b;}
+                    if (_p == "unit") _mo.unit = _property[_p];
                  }
               // If not use the value as the end
               }else{
                  this.change = _property - this.begin;                 
               }
 
-              this._motionStack.push(_m);
+              this._motionStack.push(_mo);
            }
    },
 
@@ -173,16 +174,15 @@ Tween.prototype = {
     var self = this; // Self reference for the delay setTimeout callback
 
     this._currentTime = 0;
-   
-    if (this.onBegin != -1) this.onBegin(); 
+    this._startTime = this.delay;
+    this._endTime = (this.delay == 0) ? this.duration : this.duration;
+
+    if (this.onBegin != null) this.onBegin();
     this._previousTime = Date.now();
     this.isAnimating = true;
-    this._t = (self.isReversed) ? self.duration : 0;
 
-
-    setTimeout(function(){
-        self._update();
-      }, self.delay); 
+    this._t = (self.isReversed == true) ? this._endTime : 0;
+    if (this.delay != 0) setTimeout(function(){self._update()}, this.delay);
    },
 
   /**
@@ -198,19 +198,25 @@ Tween.prototype = {
         this._delta = this._currentTime - this._previousTime;
         // Bottleneck the difference if it is too high
         this._delta = Math.min(this._delta, 25);
-        
+
         // If we are moving forward
         if (!this.isReversed){
             // If the time and the difference is less than the duration
-            if (this._t + this._delta < this.duration){
+            if (this._t + this._delta < this._endTime){
                 // Add this and the adjusted frame step to the tween value
                 this._t = this._delta + this._t;
                 // Continue to the next step
                 this._update();
+
+                if(this._t < 0){
+                  return;
+                }else {
+                  this._setProperties();
+                }
             // If we are at the end of the tween
             }else{
                 // Set the tween value to the final step
-                this._t = this.duration;
+                this._t = this._endTime;
                 // End the tween
                 this._stop();
             }
@@ -222,47 +228,57 @@ Tween.prototype = {
                 this._t = (this._t - this._delta > 0) ? this._t - this._delta : 0;
                 // Continue to the next step
                 this._update();
+
+                if(this._t > this._startTime) return;
+                else this._setProperties();
+
             }else{
               this._stop();
             }
           }
+        // If there is an onAnimate callback
+        // Change the time
+        this._previousTime = this._currentTime;
 
-        // Iterate through the motion stack to get all our motion objects
-        for (tween in this._motionStack){
-            // Assign a temporary motion object
-            var motionObject = this._motionStack[tween];
-            // If it has a property value
-            if (motionObject.prop != -1){
-                // Assign the value to the tween return value
-                this.node.style[motionObject.prop] = this.easing( this._t, motionObject.b, motionObject.c, this.duration) + motionObject.unit;
-                // If there is an onAnimate function return the tween with a beginning of 0 and an end of 1
-                if (this.onAnimate != -1) var c = this.easing( this._t, 0, 1, this.duration);
-            // If there is no property value and only a curve value
-            }else{ 
-                // If we only have one curve
-                if(this._motionStack.length == 1){
-                    // Assign the onAnimate parameter to the one curve
-                    var c = this.easing( this._t, motionObject.b, motionObject.c, this.duration);
-                // If there are multiple curves
-                }else{
-                    // Assign the onAnimate parameter to an empty array
-                    var c = [];
-                    // Iterate through the motionObjects
-                    for (motionObject in this._motionStack){
-                        var _m = this._motionStack[motionObject];
-                        // Add the return paramater to the array
-                        c.push(this.easing( this._t, _m.b, _m.c, this.duration));
-                    }
-                }
-             }
-          }
+    },
 
-          // If there is an onAnimate callback
-          if (this.onAnimate != -1) this.onAnimate(c);
-          // Change the time
-          this._previousTime = this._currentTime;
+  /**
+   * Stops the tween 
+   * @private {object}    Tween._stop
+   *
+   */
+   _setProperties:function(){
+      // Iterate through the motion stack to get all our motion objects
+      for (tween in this._motionStack){
+          // Assign a temporary motion object
+          var motionObject = this._motionStack[tween];
+          // If it has a property value
+          if (motionObject.prop != null){
+              // Assign the value to the tween return value
+              this.node.style[motionObject.prop] = this.easing( this._t, motionObject.b, motionObject.c, this._endTime) + motionObject.unit;
+              // If there is an onAnimate function return the tween with a beginning of 0 and an end of 1
+              if (this.onAnimate != null) var c = this.easing( this._t, 0, 1, this.duration);
+          // If there is no property value and only a curve value
+          }else{ 
+              // If we only have one curve
+              if(this._motionStack.length == 1){
+                  // Assign the onAnimate parameter to the one curve
+                  var c = this.easing( this._t, motionObject.b, motionObject.c, this.duration);
+              // If there are multiple curves
+              }else{
+                  // Assign the onAnimate parameter to an empty array
+                  var c = [];
+                  // Iterate through the motionObjects
+                  for (motionObject in this._motionStack){
+                      var _m = this._motionStack[motionObject];
+                      // Add the return paramater to the array
+                      c.push(this.easing( this._t, _m.b, _m.c, this.duration));
+                  }
+              }
+           }
+           if (this.onAnimate != null) this.onAnimate(c);
+        }
    },
-
   /**
    * Stops the tween 
    * @private {object}    Tween._stop
@@ -271,7 +287,7 @@ Tween.prototype = {
 
    _stop:function(){
     this.isAnimating = false;
-    if (this.onEnd != -1 && !this.isPaused) this.onEnd();
+    if (this.onEnd != null && !this.isPaused) this.onEnd();
    },
 
   /**
@@ -282,7 +298,6 @@ Tween.prototype = {
 
    _update:function(c){
     var self = this; // Self reference for the request animated frame callback
-    var hasOnAnimate = (this.onAnimate != -1)
     if (this.isAnimating == true) requestAnimFrame(function(){self._step()});
    },
 
@@ -352,14 +367,13 @@ Tween.prototype = {
           this[key] = options[key];
         }
       }
-
       // Grab the motion objects
-      if (this._motionStack == -1){
+      if (this._motionStack == null){
         this._motionStack = [];
-        if (this.properties != -1) {
-          this._setProperty(this.properties);
+        if (this.properties != null) {
+          this._setMotionFromProperty();
         }else{
-          this._setCurve();
+          this._setMotionFromCurve();
         }
       }
 
@@ -378,7 +392,7 @@ Tween.prototype = {
 */
 
 function MotionObject(){
-  this.b = 0; this.c; this.t; this.prop = -1; this.unit = "";
+  this.b = 0; this.c; this.t; this.prop = null; this.unit = "";
 }
 
 /**
@@ -388,14 +402,13 @@ function MotionObject(){
   @param {array} b              an Array of end points
 */
 
-function Line(a, b){
+Tween.Line = function(a,b){
   if (a.length != b.length) throw new Error("Uneven Amount of Lines " + a.length + " != " + b.length);
   this.curves = [a, b];
 }
 
 /** @namespace */
-
-var Easing = {
+Tween.Easing = {
       /** @property {object} Back */
       Back:{
         /** 
@@ -523,3 +536,4 @@ window.requestAnimFrame = (function(){
                   window.setTimeout(callback, 1000 / 60);
           };
 })();
+
