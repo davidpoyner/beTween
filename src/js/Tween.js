@@ -395,7 +395,7 @@ function Line(a, b){
 
 /** @namespace */
 
-var Easing = {
+Tween.Easing.prototype = {
       /** @property {object} Back */
       Back:{
         /** 

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <title>Tween - Curve Example</title>
+    <link href="css/examples.css" type="text/css" rel="stylesheet" />
     <link href="css/prettify.css" type="text/css" rel="stylesheet" />
     <link href="css/style.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="js/prettify.js"></script>
@@ -95,7 +96,7 @@
          }
 
       </script>
-      <!-- End Line Example -->
+      <!-- End Tween.Line Example -->
 </head>
 <body onload="init()">
   <div id="container">
@@ -104,6 +105,7 @@
   <br>
   <div id="viewport"><div id="rectangle"></div></div>
   <div id="button-container"><button id="tweenButton" onclick="tweenMe()"> Tween </button><button id="showButton" onclick="showCode()"> Show the Code </button></div>
+<<<<<<< HEAD
   <pre class="prettyprint linenums" style="position:relative;">
     
 
@@ -130,6 +132,32 @@
      }
      
     _tween.to(_options);      
+=======
+  <pre class="prettyprint" style="position:relative;">
+// Grab the target
+var _target = document.getElementById("rectangle");
+
+// Create the tween
+var _tween = new Tween();
+
+// Create the curve object
+var _curve = [40, 500]  
+
+// Create the tween options;
+var _options = {
+    node: _target,    // The object we are going to tween
+    duration:1000,    // The duration of the tween
+    easing:Tween.Easing.Quint.easeInOut, //The easing for the tween
+    curve:_curve,
+    onAnimate:function(c){
+      this.node.style.width = c + "px";
+      this.node.style.top = (~~(c/2) - (_curve[0]/2)) + "px";
+    },
+    onEnd:_onEnd
+ }
+ 
+_tween.to(_options);      
+>>>>>>> Minor Fixes
   </pre>
 </div>
 </body>
