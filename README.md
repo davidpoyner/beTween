@@ -1,4 +1,4 @@
-dhaakon-tween
+(be)Tween
 =============
 
-A simple tween class
+A simple tween class independant from third party libraries.
