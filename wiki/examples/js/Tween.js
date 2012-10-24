@@ -181,8 +181,9 @@ Tween.prototype = {
     this._previousTime = Date.now();
     this.isAnimating = true;
 
-    this._t = (self.isReversed == true) ? this._endTime : 0;
-    setTimeout(function(){self._update()}, this.delay);
+    this._t = (this.isReversed == true) ? this._endTime : 0;
+    var self = this;
+    setTimeout(function(){self._update();}, this.delay);
    },
 
   /**
@@ -250,7 +251,6 @@ Tween.prototype = {
           if (motionObject.prop != null){
               // Assign the value to the tween return value
               this.node.style[motionObject.prop] = this.easing( this._t, motionObject.b, motionObject.c, this._endTime) + motionObject.unit;
-              console.log(this._t);
               // If there is an onAnimate function return the tween with a beginning of 0 and an end of 1
               if (this.onAnimate != null) var c = this.easing( this._t, 0, 1, this.duration);
           // If there is no property value and only a curve value
@@ -292,7 +292,7 @@ Tween.prototype = {
    */
 
    _update:function(c){
-    var self = this; // Self reference for the request animated frame callback
+     var self = this;
     if (this.isAnimating == true) requestAnimFrame(function(){self._step()});
    },
 
@@ -531,4 +531,36 @@ window.requestAnimFrame = (function(){
                   window.setTimeout(callback, 1000 / 60);
           };
 })();
+/*
+if (!Function.prototype.bind) {
+  Function.prototype.bind = function bind(that) {
+    var target = this;
+    if (typeof target != "function") {
+        throw new TypeError();
+    }
+    var args = slice.call(arguments, 1),
+        bound = function () {
 
+          if (this instanceof bound) {
+            var F = function(){};
+            F.prototype = target.prototype;
+            var self = new F;
+            var result = target.apply(
+                self,
+                args.concat(Array.slice.call(arguments))
+            );
+            if (Object(result) === result) {
+                return result;
+            }
+            return self;
+          } else {
+            return target.apply(
+                that,
+                args.concat(Array.slice.call(arguments))
+            );
+          }
+    };
+    return bound;
+  };
+}
+*/

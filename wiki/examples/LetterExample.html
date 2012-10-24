@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-    <title>Tween - Line Example</title>
+<head>
+    <meta charset="UTF-8" />
+    <title>Tween - Letter Example</title>
     <link href="css/examples.css" type="text/css" rel="stylesheet" />
     <link href="css/prettify.css" type="text/css" rel="stylesheet" />
     <link href="css/style.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="js/prettify.js"></script>
     <script src="js/Tween.js"></script>
-    <style>
-    </style>
-    <!-- Line Example -->
+    <link href="css/style.css" />
+    <!-- Letter Example -->
     <script>
         var fadeInAll = function(){
           var i = 0;
@@ -21,13 +22,8 @@
               
               var tw = new Tween();
               tw.node = _node;
-
-              tw.duration = 700; 
-              tw.delay = i * 350;
-
               tw.duration = 400; 
               tw.delay = i * 150;
-
               tw.easing = Tween.Easing.Quint.easeIn; 
               tw.properties = {opacity:{begin:0, end:1}}
               tw.play();
@@ -41,7 +37,7 @@
           fadeInAll();
           
           // Grab the target
-          var _target = document.getElementById("rectangle");
+          var _target = document.getElementById("letterTween");
           var _tweenButton = document.getElementById("tweenButton");
           var _codeButton = document.getElementById("showButton");
 
@@ -50,34 +46,35 @@
           // Create the tween
           var _tween = new Tween();
 
-          // Create the Line object
-          var _line = new Tween.Line([0,0,0,0,0.4],[90,90,360,255,1]);
-          
+          // Create the curve object
+          var _curve = [0, 100];
 
           var _onEnd = function(){
+            _target.innerHTML = (text.toLowerCase() == "tween me!") ? "thanks!!!!" : "tween me!";
             _tween.reverse();
+            text = _target.innerHTML;
           }
-            
-          var _onAnimate = function(c){
-            this.node.style.left = c[0] + "%";
-            this.node.style.top = c[1] + "%";
-            this.node.style['webkitTransform'] = 'rotate(' + c[2] + 'deg)'
-            this.node.style.background = 'rgba(' + ~~c[3] + ', 0, 255, 1)';
-            this.node.style.opacity = c[4];
-          }
+
+          var text = _target.innerHTML;
+          var wordLength = text.length;
 
           // Create the tween options;
           var _options = {
             node: _target,    // The object we are going to tween
             duration:1000,    // The duration of the tween
-            easing:Tween.Easing.Quint.easeInOut, //The easing for the tween
-            curve:_line,
-            onEnd:_onEnd,
-            onAnimate:_onAnimate
-
+            easing:Tween.Easing.Elastic.easeInOut, //The easing for the tween
+            curve:_curve,
+            onAnimate:function(c){
+              this.node.innerHTML = "";
+              for(var i = 0; i < wordLength - 1; ++i){
+                this.node.innerHTML += getRandomLetter();
+              }              
+              this.node.innerHTML += "!";
+            },
+            onEnd:_onEnd
           }
 
-          _tweenButton.onclick = function tweenMe(){
+          _target.onclick = _tweenButton.onclick = function tweenMe(){
             if (!_tween.isAnimating) _tween.play(_options);
           };     
 
@@ -101,52 +98,65 @@
 
           _codeButton.onclick = function showCode(){            
             if (!_t.isAnimating) _t.play();
-            else return
             
             isShowingCode = (isShowingCode == true) ? false : true;
           };   
          }
+        function getRandomLetter() {
+          var rand26 = Math.floor( Math.random() * 26 );
+          return ( ( 10 + rand26 ) / 36 ).toString(36).substring(2);
+        }
+
       </script>
-      <!-- End Line.Easing Example -->
+      <!-- End Tween.Line Example -->
 </head>
 <body onload="init()">
   <div id="container">
   <div id="main-content">
-  <h1>Tween Example - Line Example</h1>
+  <h1>Tween Example - Letter</h1>
   <hr>
   <br>
-  <div id="viewport"><div id="rectangle"></div></div>
-  <div id="button-container"><button style="margin-left:0;" id="tweenButton" onclick="tweenMe()"> Tween </button><button id="showButton" onclick="showCode()"> Show the Code </button></div>
+  <div id="viewport"><span id="letterTween">Tween Me!</span></div>
+  <div id="button-container"><button id="tweenButton" onclick="tweenMe()"> Tween </button><button id="showButton" onclick="showCode()"> Show the Code </button></div>
   <pre class="prettyprint linenums" style="position:relative;">
 // Grab the target
-var _target = document.getElementById("circle");
+var _target = document.getElementById("rectangle");
 
 // Create the tween
 var _tween = new Tween();
 
-// Create the Line object
-// left, top, rotation, background, opacity
-var _line = new Tween.Line([0,0,0,0,0],[90,90,360,255,1]);
+// Create the curve object
+var _curve = [40, 500]  
 
-var _onEnd = function(){
-_tween.reverse();
-}
-
-var _onAnimate = function(c){
-    this.node.style.left = c[0] + "%";
-    this.node.style.top = c[1] + "%";
-    this.node.style['webkitTransform'] = 'rotate(' + c[2] + 'deg)'
-    this.node.style.background = 'rgba(' + ~~c[3] + ', 0, 255, 1)';
-    this.node.style.opacity = c[4];
-}  
+// Create the tween options;
+var _options = {
+    node: _target,    // The object we are going to tween
+    duration:1000,    // The duration of the tween
+    easing:Tween.Easing.Quint.easeInOut, //The easing for the tween
+    curve:_curve,
+    onAnimate:function(c){
+      this.node.style.width = c + "px";
+      this.node.style.top = (~~(c/2) - (_curve[0]/2)) + "px";
+    },
+    onEnd:_onEnd
+ }
+ 
+_tween.to(_options);      
   </pre>
 </div>
 <div id="sidebar">
   <ul class="links">
-    <h1>how it works</h1>
+    <h1>something basic</h1>
     <li><a href="./CurveExample.html">Curve example</a></li>
     <li><a href="./LineExample.html">Line example</a></li>
     <li><a href="./PropertyExample.html">Property example</a></li>
+    <h1 style="margin-top:30px;">something cool</h1>
+    <li><a href="./LetterExample.html">Letter example</a></li>
+    <li><a href="./LineExample.html">Line example</a></li>
+    <li><a href="./PropertyExample.html">Property example</a></li>
+    <h1 style="margin-top:30px;">more</h1>
+    <li><a href="../index.html">Documentation</a></li>
+
   </ul>
 </div>
 </div>

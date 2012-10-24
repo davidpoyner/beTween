@@ -47,7 +47,7 @@
           var _tween = new Tween();
 
           // Create the curve object
-          var _curve = [40, 500]          
+          var _curve = [40, 1800]          
 
           var _onEnd = function(){
             _tween.reverse();
@@ -61,12 +61,12 @@
             curve:_curve,
             onAnimate:function(c){
               this.node.style.width = c + "px";
-              this.node.style.top = (~~(c/2) - (_curve[0]/2)) + "px";
+              this.node.style.top = (~~(c/5) - (_curve[0]/5)) + "px";
             },
             onEnd:_onEnd
           }
 
-          _tweenButton.onclick = function tweenMe(){
+          _target.onclick = _tweenButton.onclick = function tweenMe(){
             if (!_tween.isAnimating) _tween.play(_options);
           };     
 
@@ -100,12 +100,13 @@
 </head>
 <body onload="init()">
   <div id="container">
+  <div id="main-content">
   <h1>Tween Example - Curve</h1>
   <hr>
   <br>
   <div id="viewport"><div id="rectangle"></div></div>
   <div id="button-container"><button id="tweenButton" onclick="tweenMe()"> Tween </button><button id="showButton" onclick="showCode()"> Show the Code </button></div>
-  <pre class="prettyprint" style="position:relative;">
+  <pre class="prettyprint linenums" style="position:relative;">
 // Grab the target
 var _target = document.getElementById("rectangle");
 
@@ -130,6 +131,22 @@ var _options = {
  
 _tween.to(_options);      
   </pre>
+</div>
+<div id="sidebar">
+  <ul class="links">
+    <h1>something basic</h1>
+    <li><a href="./CurveExample.html">Curve example</a></li>
+    <li><a href="./LineExample.html">Line example</a></li>
+    <li><a href="./PropertyExample.html">Property example</a></li>
+    <h1 style="margin-top:30px;">something cool</h1>
+    <li><a href="./LetterExample.html">Letter example</a></li>
+    <li><a href="./LineExample.html">Line example</a></li>
+    <li><a href="./PropertyExample.html">Property example</a></li>
+    <h1 style="margin-top:30px;">more</h1>
+    <li><a href="../index.html">Documentation</a></li>
+
+  </ul>
+</div>
 </div>
 </body>
 </html>

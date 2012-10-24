@@ -49,7 +49,8 @@
             width:{begin:40, end:60, unit:"px"},
             height:{begin:40, end:60, unit:"px"},
             left:{begin:0, end:800, unit:"px"},
-            top:{begin:0, end:300, unit:"px"}
+            top:{begin:0, end:300, unit:"px"},
+            borderRadius:{begin:25, end:35, unit:"px"}
           }
 
           var _onEnd = function(){
@@ -99,6 +100,7 @@
 </head>
 <body onload="init()">
   <div id="container">
+  <div id="main-content">
   <h1>Tween Example - Property</h1>
   <hr>
   <br>
@@ -129,6 +131,15 @@ var _options = {
  
 _tween.to(_options);      
   </pre>
+</div>
+<div id="sidebar">
+  <ul class="links">
+    <h1>how it works</h1>
+    <li><a href="./CurveExample.html">Curve example</a></li>
+    <li><a href="./LineExample.html">Line example</a></li>
+    <li><a href="./PropertyExample.html">Property example</a></li>
+  </ul>
+</div>
 </div>
 </body>
 </html>
