@@ -103,7 +103,11 @@ var Tween = function(){
 }
 
 Tween.prototype = {
-   
+   _callbacks:{
+      onEnd:[],
+      onBegin:[],
+      onComplete:[]
+   },
    /**
     * Private method which creates a MotionObject based on the curves set in the Tween Options before the start of the tween.
     * @private  {object}    Tween._setMotionFromCurve

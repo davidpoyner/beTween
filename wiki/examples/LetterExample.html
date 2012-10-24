@@ -19,7 +19,6 @@
             var _node = all[node]
             if(typeof _node == "object"){
               _node.style.opacity = 0;
-              
               var tw = new Tween();
               tw.node = _node;
               tw.duration = 400; 
@@ -31,11 +30,8 @@
           }
         }
         var init = function(){
-
-
           prettyPrint();
           fadeInAll();
-          
           // Grab the target
           var _target = document.getElementById("letterTween");
           var _tweenButton = document.getElementById("tweenButton");
@@ -68,7 +64,7 @@
               this.node.innerHTML = "";
               for(var i = 0; i < wordLength - 1; ++i){
                 this.node.innerHTML += getRandomLetter();
-              }              
+              }
               this.node.innerHTML += "!";
             },
             onEnd:_onEnd
@@ -76,18 +72,17 @@
 
           _target.onclick = _tweenButton.onclick = function tweenMe(){
             if (!_tween.isAnimating) _tween.play(_options);
-          };     
+          };
 
           var _t = new Tween();
           _t.node = document.querySelectorAll(".prettyprint")[0];
           _t.properties = {height:{begin:0, end:422, unit:"px"}};
           _t.easing = Tween.Easing.Expo.easeOut;
           _t.duration = 500;
-          
           _t.onBegin = function(){
             _t.node.style.display = "block";
           };
-          
+
           _t.onEnd = function(){
             _t.node.style.border = "1px grey dashed";
             _t.node.style.display = (isShowingCode == true) ? "block" : "none";
@@ -96,11 +91,10 @@
             _t.reverse();
           };
 
-          _codeButton.onclick = function showCode(){            
+          _codeButton.onclick = function showCode(){
             if (!_t.isAnimating) _t.play();
-            
             isShowingCode = (isShowingCode == true) ? false : true;
-          };   
+          };
          }
         function getRandomLetter() {
           var rand26 = Math.floor( Math.random() * 26 );
@@ -111,7 +105,7 @@
       <!-- End Tween.Line Example -->
 </head>
 <body onload="init()">
-<div id="banner"><a href="http://github.com/dhaakon/dhaakon-tween/">Fork me on GitHub</a></div>
+<div id="banner"><a href="http://github.com/dhaakon/beTween/">Fork me on GitHub</a></div>
   <div id="container">
   <div id="main-content">
   <h1>Tween Example - Letter</h1>
@@ -141,8 +135,8 @@ var _options = {
     },
     onEnd:_onEnd
  }
- 
-_tween.to(_options);      
+
+_tween.to(_options);
   </pre>
 </div>
 <div id="sidebar">
@@ -157,7 +151,6 @@ _tween.to(_options);
     <li><a href="./PropertyExample.html">Property example</a></li>
     <h1 style="margin-top:30px;">more</h1>
     <li><a href="../index.html">Documentation</a></li>
-
   </ul>
 </div>
 </div>
