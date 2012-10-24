@@ -1,16 +1,15 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>Tween - Curve Example</title>
+    <title>Tween - Canvas Example</title>
     <link href="css/examples.css" type="text/css" rel="stylesheet" />
     <link href="css/prettify.css" type="text/css" rel="stylesheet" />
     <link href="css/style.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="js/prettify.js"></script>
     <script src="js/Tween.js"></script>
     <link href="css/style.css" />
-    <!-- Curve Example -->
+    <!-- Canvas Example -->
     <script>
         var fadeInAll = function(){
           var i = 0;
@@ -20,7 +19,6 @@
             var _node = all[node]
             if(typeof _node == "object"){
               _node.style.opacity = 0;
-              
               var tw = new Tween();
               tw.node = _node;
               tw.duration = 400; 
@@ -33,81 +31,90 @@
         }
         var init = function(){
 
-
           prettyPrint();
           fadeInAll();
-          
           // Grab the target
-          var _target = document.getElementById("rectangle");
+          var _target = document.getElementById("canvasTween");
           var _tweenButton = document.getElementById("tweenButton");
           var _codeButton = document.getElementById("showButton");
-
           var isShowingCode = false;
+
+          var ctx = _target.getContext("2d");
 
           // Create the tween
           var _tween = new Tween();
 
           // Create the curve object
-          var _curve = [40, 1800]          
+          var _curve = new Tween.Line([0, 255],[100,0]);
+          var numRectangles = 100;
 
           var _onEnd = function(){
             _tween.reverse();
           }
+          var rows = 4;
+          var cols = 12;
 
           // Create the tween options;
           var _options = {
-            node: _target,    // The object we are going to tween
+            node: ctx,    // The object we are going to tween
             duration:1000,    // The duration of the tween
             easing:Tween.Easing.Quint.easeInOut, //The easing for the tween
             curve:_curve,
             onAnimate:function(c){
-              this.node.style.width = c + "px";
-              this.node.style.top = (~~(c/5) - (_curve[0]/5)) + "px";
+              _target.width = _target.width;
+              ctx.fillStyle = "rgba(" + ~~c[1] + ", 255, 255, 1)"
+              for(var j = 0; j < cols; j++){
+                for(var k = 0; k < rows; k++){
+                  ctx.fillRect(j*100, k*100, c[0], c[0]);
+                }
+              }
             },
             onEnd:_onEnd
           }
 
           _target.onclick = _tweenButton.onclick = function tweenMe(){
             if (!_tween.isAnimating) _tween.play(_options);
-          };     
+          };
 
           var _t = new Tween();
           _t.node = document.querySelectorAll(".prettyprint")[0];
           _t.properties = {height:{begin:0, end:422, unit:"px"}};
           _t.easing = Tween.Easing.Expo.easeOut;
           _t.duration = 500;
-          
           _t.onBegin = function(){
             _t.node.style.display = "block";
           };
-          
+
           _t.onEnd = function(){
             _t.node.style.border = "1px grey dashed";
             _t.node.style.display = (isShowingCode == true) ? "block" : "none";
-
             _codeButton.innerHTML = (isShowingCode == true) ? "hide the code" : "show the code";
             _t.reverse();
           };
 
           _codeButton.onclick = function showCode(){            
             if (!_t.isAnimating) _t.play();
-            
             isShowingCode = (isShowingCode == true) ? false : true;
-          };   
+          };
          }
+        function getRandomLetter() {
+          var rand26 = Math.floor( Math.random() * 26 );
+          return ( ( 10 + rand26 ) / 36 ).toString(36).substring(2);
+        }
 
       </script>
       <!-- End Tween.Line Example -->
 </head>
 <body onload="init()">
-  <div id="container">
-  <div id="main-content">
-  <h1>Tween Example - Curve</h1>
-  <hr>
-  <br>
-  <div id="viewport"><div id="rectangle"></div></div>
-  <div id="button-container"><button id="tweenButton" onclick="tweenMe()"> Tween </button><button id="showButton" onclick="showCode()"> Show the Code </button></div>
-  <pre class="prettyprint linenums" style="position:relative;">
+<div id="banner"><a href="http://github.com/dhaakon/dhaakon-tween/">Fork me on GitHub</a></div>
+<div id="container">
+<div id="main-content">
+<h1>Tween Example - Canvas</h1>
+<hr>
+<br>
+<div style="width:1200px" id="viewport"><canvas id="canvasTween" width="1200" height="400"></canvas></div>
+<div id="button-container"><button id="tweenButton" onclick="tweenMe()"> Tween </button><button id="showButton" onclick="showCode()"> Show the Code </button></div>
+<pre class="prettyprint linenums" style="position:relative;">
 // Grab the target
 var _target = document.getElementById("rectangle");
 
@@ -151,5 +158,4 @@ _tween.to(_options);
 </div>
 </body>
 </html>
-
 
