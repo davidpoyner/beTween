@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
     <title>Tween - Line Example</title>
     <link href="css/examples.css" type="text/css" rel="stylesheet" />
     <link href="css/prettify.css" type="text/css" rel="stylesheet" />
@@ -50,7 +49,6 @@
 
           // Create the tween
           var _tween = new Tween();
-
 
           // Create the Line object
           var _line = new Tween.Line([0,0,0,0,0.4],[90,90,360,255,1]);
@@ -109,11 +107,11 @@
           };   
          }
       </script>
-      <!-- End Line Example -->
+      <!-- End Line.Easing Example -->
 </head>
 <body onload="init()">
   <div id="container">
-  <h1>Tween Example - Line</h1>
+  <h1>Tween Example - Line.Easing</h1>
   <hr>
   <br>
   <div id="viewport"><div id="rectangle"></div></div>
@@ -140,7 +138,6 @@ var _onAnimate = function(c){
     this.node.style.background = 'rgba(' + ~~c[3] + ', 0, 255, 1)';
     this.node.style.opacity = c[4];
 }  
-
   </pre>
   <ul id="links">
     <a href="./CurveExample.html">Curve example</a>
