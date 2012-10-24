@@ -92,11 +92,7 @@ var Tween = function(){
   this.isPaused = false; 
   this.properties = null;  
   this.curve = [0, 1];
-<<<<<<< HEAD
   this.easing = Tween.Easing.Quad.easeOut;
-=======
-  this.easing = Tween.Easing.Circ.easeIn;
->>>>>>> Minor Fixes
   this._previousTime = null; 
   this._currentTime = null; 
   this._startTime = 0;
@@ -118,19 +114,11 @@ Tween.prototype = {
     var c = this.curve;
 
     if (c instanceof Tween.Line == false){
-<<<<<<< HEAD
       var _mo = new MotionObject();
       _mo.d = this.duration;
       _mo.b = c[0];
       _mo.c = c[1] - c[0];
       this._motionStack.push(_mo);
-=======
-      var _m = new MotionObject();
-      _m.d = this.duration;
-      _m.b = c[0];
-      _m.c = c[1] - c[0];
-      this._motionStack.push(_m);
->>>>>>> Minor Fixes
     }else{
         var _c1 = c.curves[0];
         var _c2 = c.curves[1];
@@ -194,7 +182,7 @@ Tween.prototype = {
     this.isAnimating = true;
 
     this._t = (self.isReversed == true) ? this._endTime : 0;
-    if (this.delay != 0) setTimeout(function(){self._update()}, this.delay);
+    setTimeout(function(){self._update()}, this.delay);
    },
 
   /**
@@ -219,16 +207,12 @@ Tween.prototype = {
                 this._t = this._delta + this._t;
                 // Continue to the next step
                 this._update();
-
-                if(this._t < 0){
-                  return;
-                }else {
-                  this._setProperties();
-                }
+                this._setProperties();
             // If we are at the end of the tween
             }else{
                 // Set the tween value to the final step
-                this._t = this._endTime;
+                this._t = this.duration;
+                this._setProperties();
                 // End the tween
                 this._stop();
             }
@@ -240,9 +224,7 @@ Tween.prototype = {
                 this._t = (this._t - this._delta > 0) ? this._t - this._delta : 0;
                 // Continue to the next step
                 this._update();
-
-                if(this._t > this._startTime) return;
-                else this._setProperties();
+                this._setProperties();
 
             }else{
               this._stop();
@@ -414,20 +396,12 @@ function MotionObject(){
   @param {array} b              an Array of end points
 */
 
-<<<<<<< HEAD
-Tween.Line = function(a,b){
-=======
 Tween.Line = function(a, b){
->>>>>>> Minor Fixes
   if (a.length != b.length) throw new Error("Uneven Amount of Lines " + a.length + " != " + b.length);
   this.curves = [a, b];
 }
 
 /** @namespace */
-<<<<<<< HEAD
-=======
-
->>>>>>> Minor Fixes
 Tween.Easing = {
       /** @property {object} Back */
       Back:{
