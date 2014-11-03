@@ -228,7 +228,7 @@ Tween.prototype = {
           }
 
         // Iterate through the motion stack to get all our motion objects
-        for (tween in this._motionStack){
+        for ( var tween in this._motionStack){
             // Assign a temporary motion object
             var motionObject = this._motionStack[tween];
             // If it has a property value
@@ -248,7 +248,7 @@ Tween.prototype = {
                     // Assign the onAnimate parameter to an empty array
                     var c = [];
                     // Iterate through the motionObjects
-                    for (motionObject in this._motionStack){
+                    for (var motionObject in this._motionStack){
                         var _m = this._motionStack[motionObject];
                         // Add the return paramater to the array
                         c.push(this.easing( this._t, _m.b, _m.c, this.duration));
@@ -347,7 +347,7 @@ Tween.prototype = {
       //setup options
       if(options){
         // Iterate through the options
-        for (key in options){
+        for (var key in options){
           // Assign our properties
           this[key] = options[key];
         }
