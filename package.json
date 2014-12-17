@@ -3,9 +3,12 @@
   "version": "0.0.1",
   "description": "Simple lightweight tween class.",
   "main": "src/js/beTween.js",
-  "private":true,
+  "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "publishConfig": {
+    "registry": "http://npm.kettlenyc.com:4873/"
   },
   "repository": {
     "type": "git",
@@ -20,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/davidpoyner/beTween/issues"
   },
-  "homepage": "https://github.com/davidpoyner/beTween"
+  "homepage": "https://github.com/davidpoyner/beTween",
+  "devDependencies": {
+    "grunt": "^0.4.5"
+  }
 }
