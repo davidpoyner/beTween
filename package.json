@@ -1,0 +1,24 @@
+{
+  "name": "kettle-tween",
+  "version": "0.0.1",
+  "description": "Simple lightweight tween class.",
+  "main": "src/js/beTween.js",
+  "private":true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/davidpoyner/beTween"
+  },
+  "keywords": [
+    "tween",
+    "animation"
+  ],
+  "author": "David Poyner",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/davidpoyner/beTween/issues"
+  },
+  "homepage": "https://github.com/davidpoyner/beTween"
+}
